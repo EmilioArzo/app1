@@ -1,115 +1,74 @@
 import { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 
-const formatoNumero = (n) => new Intl.NumberFormat("es-MX").format(n);
-
 /**
  *
  * @param {object}   props
- * @param {object[]} props.planetas
+ * @param {object[]} props.personajes
  */
-function PlanetTable({ planetas }) {
+function PlanetTable({ personajes }) {
 const [abierto, setAbierto] = useState(null);
 
-const alternar = (index) =>
-    setAbierto((actual) => (actual === index ? null : index));
+const alternar = (id) => setAbierto((actual) => (actual === id ? null : id));
 
-if (planetas.length === 0) {
-    return <p className="empty">Ningún planeta coincide con tu búsqueda.</p>;
-}
 
 return (
     <div className="table-wrap">
     <table className="table">
         <thead>
         <tr>
-            <th>Planeta</th>
-            <th>Sector</th>
-            <th>Bioma</th>
-            <th>Controlado por</th>
-            <th className="num">Jugadores</th>
-            <th className="num">Salud</th>
+            <th>Personaje</th>
+            <th>Imagen</th>
+            <th>nombre</th>
+            <th>especie</th>
         </tr>
         </thead>
 
-        <tbody>
-        {planetas.map((p) => {
-            const estaAbierto = abierto === p.index;
-            const salud = p.maxHealth
-            ? Math.round((p.health / p.maxHealth) * 100)
-            : 0;
+<tbody>
+    {personajes.map((p) => {
+        const estaAbierto = abierto === p.id;
 
-            return (
-            <Fragment key={p.index}>
+        return (
+            <Fragment key={p.id}>
                 <tr
-                className={`row ${estaAbierto ? "row--open" : ""}`}
-                onClick={() => alternar(p.index)}
+                    className={`row ${estaAbierto ? "row--open" : ""}`}
+                    onClick={() => alternar(p.id)}
                 >
-                <td>
-                    <button
-                    type="button"
-                    className="row__toggle"
-                    aria-expanded={estaAbierto}
-                    >
-                    {p.name}
-                    </button>
-                </td>
-                <td>{p.sector}</td>
-                <td>{p.biome?.name ?? "—"}</td>
-                <td>
-                    <span
-                    className={`owner owner--${p.currentOwner.toLowerCase()}`}
-                    >
-                    {p.currentOwner}
-                    </span>
-                </td>
-                <td className="num">
-                    {formatoNumero(p.statistics.playerCount)}
-                </td>
-                <td className="num">{salud}%</td>
-                </tr>
-
-                {estaAbierto && (
-                <tr className="detail">
-                    <td colSpan={6}>
-                    <p>{p.biome?.description}</p>
-                    <p>
-                        Salud: {formatoNumero(p.health)} /{" "}
-                        {formatoNumero(p.maxHealth)} · Regeneración:{" "}
-                        {p.regenPerSecond.toFixed(2)}/s · Dueño original:{" "}
-                        {p.initialOwner}
-                    </p>
+                    <td>{p.id}</td>
+                    <td>
+                        <img
+                            src={p.image}
+                            alt={p.name}
+                            width="60"
+                        />
                     </td>
+                    <td>{p.name}</td>
+                    <td>{p.species}</td>
                 </tr>
-                )}
             </Fragment>
-            );
-        })}
-        </tbody>
+        );
+    })}
+</tbody>
     </table>
+                
     </div>
 );
 }
 
 
 PlanetTable.propTypes = {
-planetas: PropTypes.arrayOf(
+personajes: PropTypes.arrayOf(
     PropTypes.shape({
-    index: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    sector: PropTypes.string,
-    biome: PropTypes.shape({
-        name: PropTypes.string,
-        description: PropTypes.string,
-    }),
-    currentOwner: PropTypes.string.isRequired,
-    initialOwner: PropTypes.string,
-    health: PropTypes.number.isRequired,
-    maxHealth: PropTypes.number.isRequired,
-    regenPerSecond: PropTypes.number,
-    statistics: PropTypes.shape({
-        playerCount: PropTypes.number,
-    }).isRequired,
+    status: PropTypes.string.isRequired,
+    species: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    gender: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    origin: PropTypes.shape({ name: PropTypes.string }).isRequired,
+    location: PropTypes.shape({ name: PropTypes.string, }).isRequired,
+    episode: PropTypes.arrayOf(PropTypes.string).isRequired,
     })
 ).isRequired,
 };
