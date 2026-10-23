@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 
+const CLAVE = "ultimaBusqueda";
+
 /**
  *
  * @param {object}   props
@@ -8,28 +10,40 @@ import PropTypes from "prop-types";
  * @param {Function} props.onLimpiar  - Callback para borrar la búsqueda.
  */
 function PlanetFilter({ busqueda, onBuscar, onLimpiar }) {
-return (
-    <>
-    <div className="filter" role="search">
-        <label htmlFor="planet-search" className="filter__label">
-        Nombre del planeta
-        </label>
+const manejarCambio = (e) => {
+    const texto = e.target.value;
 
-        {/* value + onChange = input controlado: cada letra dispara onBuscar */}
-        <input
+    if (texto.trim() !== "") {
+    try {
+        localStorage.setItem(CLAVE, texto);
+    } catch {
+        
+    }
+    }
+
+    onBuscar(texto);
+};
+
+return (
+    <div className="filter" role="search">
+    <label htmlFor="planet-search" className="filter__label">
+        Nombre del planeta
+    </label>
+
+    {/* value + onChange = input controlado: cada letra dispara onBuscar */}
+    <input
         id="planet-search"
         className="filter__input"
         type="search"
         value={busqueda}
-        onChange={(e) => onBuscar(e.target.value)}
+        onChange={manejarCambio}
         placeholder="Escribe para filtrar…"
-        />
+    />
 
-        <button type="button" className="filter__reset" onClick={onLimpiar}>
+    <button type="button" className="filter__reset" onClick={onLimpiar}>
         Limpiar
-        </button>
+    </button>
     </div>
-    </>
 );
 }
 

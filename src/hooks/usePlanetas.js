@@ -19,7 +19,6 @@ useEffect(() => {
         if (!res.ok) throw new Error(`Error ${res.status} al consultar la API`);
         return res.json();
     })
-    // La API devuelve { info, results }: la lista está en "results"
     .then((data) => setPlanetas(data.results))
     .catch((err) => {
         if (err.name !== "AbortError") setError(err.message);
